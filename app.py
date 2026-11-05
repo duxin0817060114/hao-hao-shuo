@@ -11,9 +11,18 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 注入治愈系风格及全新升级组件的 CSS
+# 注入治愈系风格及全新升级组件的 CSS（包含彻底隐藏 Streamlit 官方黑边与水印）
 st.markdown("""
 <style>
+    /* 1. 彻底隐藏 Streamlit 官方顶部黑栏与右下角管理图标 */
+    header[data-testid="stHeader"] {
+        display: none !important;
+    }
+    [data-testid="stStatusWidget"], #stDecoration, .stAppViewer, div[data-testid="stToolbar"] {
+        display: none !important;
+    }
+
+    /* 2. 主页面背景与字体设置 */
     .stApp {
         background-color: #FBF9F2 !important;
         font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
@@ -227,7 +236,7 @@ if "refine_mode" not in st.session_state:
     st.session_state.refine_mode = "正常"
 
 
-# ==================== 后台管理（侧边栏） ====================
+# ==================== 后台管理（侧边栏隔离） ====================
 with st.sidebar:
     st.markdown("### ⚙️ 后台系统设置")
     run_mode_choice = st.radio(
@@ -263,14 +272,14 @@ with st.sidebar:
 
 # ==================== 家校沟通前台（主界面） ====================
 
-# 【功能 2 实现】：微信端专属温馨提示条
+# 微信端提示条
 st.markdown("""
 <div class='wx-tip-bar'>
     💬 提示：点击复制后，可直接粘贴至微信发给老师，沟通更顺畅。
 </div>
 """, unsafe_allow_html=True)
 
-# 【功能 4 实现】：带有情境标签的历史对话脉络展示
+# 带情境标签的历史对话展示
 if st.session_state.conversation_history:
     st.markdown("### 💬 历史对话脉络")
     for chat in st.session_state.conversation_history:
@@ -401,7 +410,7 @@ if "analysis_result" in st.session_state:
     st.divider()
     st.subheader("第二步：沟通分析与回复方案")
 
-    # 【功能 3 实现】：智能沟通雷达与风险预警
+    # 智能沟通雷达与风险预警
     risk_lvl = result["teacher_analysis"].get("risk_level", "普通")
     if risk_lvl in ["较高", "紧急", "严重"]:
         st.markdown(f"""
@@ -415,7 +424,7 @@ if "analysis_result" in st.session_state:
     with sub_tab1:
         replies = result["replies"]
         
-        # 【功能 1 实现】：一键语气/字数微调按钮组
+        # 一键语气微调按钮组
         st.markdown("##### 🪄 一键调整回复风格")
         col_m1, col_m2, col_m3 = st.columns(3)
         with col_m1:
@@ -431,7 +440,7 @@ if "analysis_result" in st.session_state:
                 st.session_state.refine_mode = "简短"
                 st.rerun()
 
-        # 根据微调模式动态调整回复文本展示
+        # 动态切换风格文本
         nat_text = replies.get('natural', '')
         rat_text = replies.get('rational', '')
         pri_text = replies.get('principled', '')
