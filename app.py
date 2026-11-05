@@ -11,15 +11,24 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 注入治愈系风格及全新升级组件的 CSS（包含彻底隐藏 Streamlit 官方黑边与水印）
+# 注入极简治愈系风格及强效隐藏官方控件的 CSS
 st.markdown("""
 <style>
-    /* 1. 彻底隐藏 Streamlit 官方顶部黑栏与右下角管理图标 */
+    /* 1. 彻底隐藏顶部黑栏、侧边栏开关、右下角 Streamlit 挂件及管理图标 */
     header[data-testid="stHeader"] {
         display: none !important;
     }
-    [data-testid="stStatusWidget"], #stDecoration, .stAppViewer, div[data-testid="stToolbar"] {
+    [data-testid="stStatusWidget"], 
+    #stDecoration, 
+    .stAppViewer, 
+    div[data-testid="stToolbar"],
+    button[data-testid="stActionButton"],
+    div[data-testid="stAppDeployButton"],
+    section[data-testid="stSidebarNav"],
+    .stMainMenu {
         display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
     }
 
     /* 2. 主页面背景与字体设置 */
