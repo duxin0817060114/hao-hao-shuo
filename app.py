@@ -11,19 +11,13 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 注入极简治愈系风格及强效隐藏官方控件的 CSS
+# 注入极简治愈系风格及“右下角悬浮按钮半透明、缩小并防误点”的 CSS
 st.markdown("""
 <style>
-    /* 1. 彻底隐藏顶部黑栏、侧边栏开关、右下角 Streamlit 挂件及管理图标 */
+    /* 1. 彻底隐藏顶部黑栏、侧边栏开关 */
     header[data-testid="stHeader"] {
         display: none !important;
     }
-    [data-testid="stStatusWidget"], 
-    #stDecoration, 
-    .stAppViewer, 
-    div[data-testid="stToolbar"],
-    button[data-testid="stActionButton"],
-    div[data-testid="stAppDeployButton"],
     section[data-testid="stSidebarNav"],
     .stMainMenu {
         display: none !important;
@@ -31,7 +25,27 @@ st.markdown("""
         opacity: 0 !important;
     }
 
-    /* 2. 主页面背景与字体设置 */
+    /* 2. 将右下角 Streamlit 官方悬浮挂件进行半透明化、缩小并开启防误点（鼠标穿透） */
+    [data-testid="stStatusWidget"], 
+    #stDecoration, 
+    .stAppViewer, 
+    div[data-testid="stToolbar"],
+    button[data-testid="stActionButton"],
+    div[data-testid="stAppDeployButton"] {
+        opacity: 0.15 !important;              /* 变得非常透明 */
+        transform: scale(0.65) !important;     /* 整体缩小到 65% */
+        transform-origin: bottom right !important;
+        pointer-events: none !important;       /* 绝对防误点：鼠标直接穿透，无法点击 */
+        transition: opacity 0.2s ease;
+    }
+    
+    /* 鼠标不小心滑过去时也保持安静隐形 */
+    [data-testid="stStatusWidget"]:hover, 
+    div[data-testid="stToolbar"]:hover {
+        opacity: 0.25 !important;
+    }
+
+    /* 3. 主页面背景与字体设置 */
     .stApp {
         background-color: #FBF9F2 !important;
         font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
